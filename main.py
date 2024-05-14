@@ -5,12 +5,63 @@ import book as book_mod
 import user as user_mod
 import author as author_mod
 import genre as genre_mod
+from database_connector import connect_db, close_connection
 
 book_collection = {} # {ISBN : Book}
 user_collection = {} # {UUID : User}
 author_collection = [] # [Author]
 genre_collection = [] # [Genre]
 text_deliniator = "|"
+
+def populate_collection(table_name):
+    global book_collection
+    global user_collection
+    global author_collection
+    global genre_collection
+    
+    select_query = f"SELECT * from {table_name}"
+    conn, cursor = connect_db()
+    if conn is not None:
+        cursor.execute(select_query)
+        results = cursor.fetchall()
+        if table_name == "books": # Adds a book object into the book_collection for every entry in the database
+            if results:
+                for result in results:
+                    title = result[1]
+                    author_id = result[2]
+                    genre_id = result[3]
+                    ISBN = result[4]
+                    publication_date = result[5]
+                    available = result[6]
+                    book_collection = book_mod.book_collection_add(title, author_id, genre_id, ISBN, publication_date, book_collection, available)
+            else:
+                book_collection = {}
+        elif table_name == "users": # Adds a user object into the user_collection for every entry in the database
+            if results:
+                for result in results:
+                    name = result[1]
+                    library_uuid = result[2]
+                    user_collection = user_mod.user_collection_add(name, library_uuid, user_collection)
+            else:
+                user_collection = {}
+        elif table_name == "authors": # Adds an author object into the author_collection for every entry in the database
+            if results:
+                for result in results:
+                    name = result[1]
+                    bio = result[2]
+                    author_collection = author_mod.author_collection_add(name, bio, author_collection)
+            else:
+                author_collection = []
+        elif table_name == "genres": # Adds a genre object into the genre_collection for every entry in the database
+            if results:
+                for result in results:
+                    name = result[1]
+                    description = result[2]
+                    category = result[3]
+                    genre_collection = genre_mod.genre_collection_add(name, description, category, genre_collection)
+            else:
+                genre_collection = []
+        close_connection(conn, cursor)
 
 def load_file(filename):
     if os.path.exists(f"Files\\{filename}"):
@@ -117,10 +168,11 @@ def main():
     global user_collection
     global author_collection
     global genre_collection
-    book_collection = load_file("books.txt")
-    user_collection = load_file("users.txt")
-    author_collection = load_file("authors.txt")
-    genre_collection = load_file("genres.txt")
+
+    populate_collection("books")
+    populate_collection("users")
+    populate_collection("authors")
+    populate_collection("genres")
 
     while True:
         print("Main Menu:")

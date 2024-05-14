@@ -48,38 +48,10 @@ class Book:
         return self
     
     def get_resrvations(self):
-        pass
+        pass      
 
-class Book_Fiction(Book):
-    def __init__(self, title, author_id, ISBN, genre, publication_date, available = True):
-        super().__init__(title, author_id, ISBN, genre, publication_date, available)
-
-    def __str__(self):
-        print("A work of fiction")
-
-class Book_Non_Fiction(Book):
-    def __init__(self, title, author_id, ISBN, genre, publication_date, available = True):
-        super().__init__(title, author_id, ISBN, genre, publication_date, available)
-
-    def __str__(self):
-        print("A work of truth")
-
-class Book_Mystery(Book):
-    def __init__(self, title, author_id, ISBN, genre, publication_date, available = True):
-        super().__init__(title, author_id, ISBN, genre, publication_date, available)
-
-    def __str__(self):
-        print("Who knows?")        
-
-def book_collection_add(title, author_id, ISBN, genre, publication_date, collection = {}, available = True, type = 4):
-    if type == 1:
-        new_book = Book_Fiction(title, author_id, ISBN, genre, publication_date, available)
-    elif type == 2:
-        new_book = Book_Non_Fiction(title, author_id, ISBN, genre, publication_date, available)
-    elif type == 3:
-        new_book = Book_Mystery(title, author_id, ISBN, genre, publication_date, available)
-    else:
-        new_book = Book(title, author_id, ISBN, genre, publication_date, available)
+def book_collection_add(title, author_id, genre, ISBN, publication_date, collection = {}, available = True):
+    new_book = Book(title, author_id, genre, ISBN, publication_date, available)
         
     if collection:
         collection[ISBN] = new_book
