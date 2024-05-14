@@ -1,29 +1,21 @@
 
 class User:
-    def __init__(self, name, UUID, borrow_history = []):
+    def __init__(self, name, library_uuid):
         self.__name = name
-        self.__UUID = UUID
-        self.__borrow_history = borrow_history
+        self.__library_uuid = library_uuid
 
     def get_name(self):
         return self.__name
 
-    def get_UUID(self):
-        return self.__UUID
-
-    def get_borrow_history(self):
-        return self.__borrow_history
-
-    def add_to_borrow_history(self, book):
-        self.__borrow_history.append(book.get_title())
-        return self
+    def get_library_uuid(self):
+        return self.__library_uuid
     
-def user_collection_add(name, UUID, collection, borrow_history = []):
-    new_user = User(name, UUID, borrow_history)
+def user_collection_add(name, library_uuid, collection):
+    new_user = User(name, library_uuid)
     if collection:
-        collection[UUID] = new_user
+        collection[library_uuid] = new_user
     else:
-        collection = {UUID: new_user}
+        collection = {library_uuid: new_user}
     return collection
 
 def notify_user(user):

@@ -1,35 +1,31 @@
 import user as user_mod
 
 class Book:
-    def __init__(self, title, author, ISBN, genre, publication_date, available = True, reserve_list = []):
+    def __init__(self, title, author_id, genre, ISBN, publication_date, available = True):
         self.__title = title
-        self.__author = author
-        self.__ISBN = ISBN
+        self.__author_id = author_id
         self.__genre = genre
+        self.__ISBN = ISBN
         self.__publication_date = publication_date
         self.__available = available
-        self.__reserve_list = reserve_list
 
     def get_title(self):
         return self.__title
 
-    def get_author(self):
-        return self.__author
-
-    def get_ISBN(self):
-        return self.__ISBN
+    def get_author_id(self):
+        return self.__author_id
 
     def get_genre(self):
         return self.__genre
+
+    def get_ISBN(self):
+        return self.__ISBN
 
     def get_publication_date(self):
         return self.__publication_date
 
     def get_available(self):
         return self.__available
-
-    def get_reserve_list(self):
-        return self.__reserve_list
     
     def borrow_book(self, user_ID):
         if self.__available:
@@ -37,7 +33,7 @@ class Book:
         else:
             choice = input("Would you like to be put on the reserve list for this book? (y/n): ")
             if choice == "y":
-                self.__reserve_list.append(user_ID)
+                pass
                 print(f"{user_ID} added to the reservation list for {self.__title}")
         return self
 
@@ -46,43 +42,44 @@ class Book:
             print("This book is not currently borrowed!")
             return self, ""
         else:
-            if self.__reserve_list:
-                next_reserved_user_ID = self.__reserve_list.pop(0)
-            else:
-                next_reserved_user_ID = ""
+            if self.get_resrvations():
+                pass
         self.__available = True
-        return self, next_reserved_user_ID
+        return self
+    
+    def get_resrvations(self):
+        pass
 
 class Book_Fiction(Book):
-    def __init__(self, title, author, ISBN, genre, publication_date, available = True, reserve_list = []):
-        super().__init__(title, author, ISBN, genre, publication_date, available, reserve_list)
+    def __init__(self, title, author_id, ISBN, genre, publication_date, available = True):
+        super().__init__(title, author_id, ISBN, genre, publication_date, available)
 
     def __str__(self):
         print("A work of fiction")
 
 class Book_Non_Fiction(Book):
-    def __init__(self, title, author, ISBN, genre, publication_date, available = True, reserve_list = []):
-        super().__init__(title, author, ISBN, genre, publication_date, available, reserve_list)
+    def __init__(self, title, author_id, ISBN, genre, publication_date, available = True):
+        super().__init__(title, author_id, ISBN, genre, publication_date, available)
 
     def __str__(self):
         print("A work of truth")
 
 class Book_Mystery(Book):
-    def __init__(self, title, author, ISBN, genre, publication_date, available = True, reserve_list = []):
-        super().__init__(title, author, ISBN, genre, publication_date, available, reserve_list)
+    def __init__(self, title, author_id, ISBN, genre, publication_date, available = True):
+        super().__init__(title, author_id, ISBN, genre, publication_date, available)
 
     def __str__(self):
         print("Who knows?")        
 
-def book_collection_add(title, author, ISBN, genre, publication_date, collection = {}, available = True, res_list = [], type = 4):
+def book_collection_add(title, author_id, ISBN, genre, publication_date, collection = {}, available = True, type = 4):
     if type == 1:
-        new_book = Book_Fiction(title, author, ISBN, genre, publication_date, available, res_list)
+        new_book = Book_Fiction(title, author_id, ISBN, genre, publication_date, available)
     elif type == 2:
-        new_book = Book_Non_Fiction(title, author, ISBN, genre, publication_date, available, res_list)
+        new_book = Book_Non_Fiction(title, author_id, ISBN, genre, publication_date, available)
     elif type == 3:
-        new_book = Book_Mystery(title, author, ISBN, genre, publication_date, available, res_list)
+        new_book = Book_Mystery(title, author_id, ISBN, genre, publication_date, available)
     else:
-        new_book = Book(title, author, ISBN, genre, publication_date, available, res_list)
+        new_book = Book(title, author_id, ISBN, genre, publication_date, available)
         
     if collection:
         collection[ISBN] = new_book
