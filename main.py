@@ -7,11 +7,11 @@ import author as author_mod
 import genre as genre_mod
 from database_connector import connect_db, close_connection
 
-book_collection = {} # {ISBN : Book}
-user_collection = {} # {UUID : User}
-author_collection = [] # [Author]
-genre_collection = [] # [Genre]
-text_deliniator = "|"
+# book_collection = {} # {ISBN : Book}
+# user_collection = {} # {UUID : User}
+# author_collection = [] # [Author]
+# genre_collection = [] # [Genre]
+# text_deliniator = "|"
 
 def populate_collection(table_name):
     global book_collection
@@ -201,10 +201,10 @@ def main():
             exit()
 
 def menu_book_ops():
-    global book_collection
-    global user_collection
-    global author_collection
-    global genre_collection
+    # global book_collection
+    # global user_collection
+    # global author_collection
+    # global genre_collection
     while True:
         print("Book Operations:")
         print("1. Add a new book")
@@ -221,75 +221,29 @@ def menu_book_ops():
 
         if choice == 1: #  Add a new book
             print("Adding a new book to the library!")
-            title = input("Enter the title for the new book: ")
-            author = input("Enter the author for the new book: ")
-            author_lower = author.lower()
-            existing_author_list = []
-            for existing_author in author_collection: # checks to see if author already exists in list, if not ask for bio and add to author list
-                existing_author_list.append(existing_author.get_name().lower())
-                if author_lower not in existing_author_list:
-                    print("Adding new author to list!")
-                    author_biography = input(f"Enter the biography of \'{author}\': ")
-                    author_collection = author_mod.author_collection_add(author, author_biography, author_collection)
-                    print(f"{author} added to Author collection!")
-                    save_authors_file()
-                    break
-            ISBN = input("Enter the ISBN for the new book: ")
-            genre = input("Enter the genre for the new book: ")
-            genre_lower = genre.lower()
-            existing_genre_list = []
-            for existsing_genre in genre_collection:
-                existing_genre_list.append(existsing_genre.get_name().lower())
-                if genre_lower not in existing_genre_list:
-                    print("Adding new genre to list!")
-                    genre_description = input(f"Enter a description for genre \'{genre}\':")
-                    genre_category = input(f"Enter a category for genre \'{genre}\':")
-                    genre_collection = genre_mod.genre_collection_add(genre, genre_description, genre_category, genre_collection)
-                    print(f"{genre} added to Genre collection!")
-                    save_genres_file()
-                    break
-            publication_date = input("Enter the publication date for the new book: ")
-
-            while True:
-                print("Which of the following type of book is this?")
-                print("1. Fiction")
-                print("2. Non-Fiction")
-                print("3. Mystery")
-                print("4. Other")
-                book_choice = input()
-                try:
-                    book_choice = int(book_choice)
-                    if book_choice < 1 or book_choice > 4:
-                        print("Only enter a number 1-4")
-                        continue
-                    break
-                except ValueError:
-                    print("Only enter a number 1-4")
-                    continue
-            book_collection = book_mod.book_collection_add(title, author, ISBN, genre, publication_date, book_collection, book_choice)
-            print(f"{title} added to the Book collection!")
-            save_books_file()
+            book_mod.book_collection_add()
             break
         elif choice == 2: # Borrow/Reserve a book
-            userID = input("Enter the UUID of the user who would like to borrow a book: ")
-            try:
-                user_to_borrow = user_collection[userID]
-            except KeyError:
-                print("No user found with that ID!")
-                continue
+            book_mod.borrow_book()
+            # userID = input("Enter the UUID of the user who would like to borrow a book: ")
+            # try:
+            #     user_to_borrow = user_collection[userID]
+            # except KeyError:
+            #     print("No user found with that ID!")
+            #     continue
 
-            ISBN = input("Enter the ISBN of the book you wish to borrow: ")
-            try:
-                book_to_borrow = book_collection[ISBN]
-            except KeyError:
-                print("No book found with that ISBN!")
-                continue
+            # ISBN = input("Enter the ISBN of the book you wish to borrow: ")
+            # try:
+            #     book_to_borrow = book_collection[ISBN]
+            # except KeyError:
+            #     print("No book found with that ISBN!")
+            #     continue
             
-            book_collection[ISBN] = book_to_borrow.borrow_book(userID)
-            if book_collection[ISBN].get_available():
-                user_collection[userID] = user_to_borrow.add_to_borrow_history(book_collection[ISBN])
-            save_books_file()
-            save_users_file()
+            # book_collection[ISBN] = book_to_borrow.borrow_book(userID)
+            # if book_collection[ISBN].get_available():
+            #     user_collection[userID] = user_to_borrow.add_to_borrow_history(book_collection[ISBN])
+            # save_books_file()
+            # save_users_file()
             break
         elif choice == 3: # Return a book
             book_returned_ISBN = input("Enter the ISBN of the book to return: ")

@@ -1,14 +1,16 @@
+from database_connector import connect_db, close_connection
+from mysql.connector import Error
 
-class User:
-    def __init__(self, name, library_uuid):
-        self.__name = name
-        self.__library_uuid = library_uuid
+# class User:
+#     def __init__(self, name, library_uuid):
+#         self.__name = name
+#         self.__library_uuid = library_uuid
 
-    def get_name(self):
-        return self.__name
+#     def get_name(self):
+#         return self.__name
 
-    def get_library_uuid(self):
-        return self.__library_uuid
+#     def get_library_uuid(self):
+#         return self.__library_uuid
     
 def user_collection_add(name, library_uuid, collection):
     new_user = User(name, library_uuid)
@@ -17,6 +19,21 @@ def user_collection_add(name, library_uuid, collection):
     else:
         collection = {library_uuid: new_user}
     return collection
+
+def check_user_exists(user_id):
+    conn, cursor = connect_db()
+    if conn is not None:
+        name_value = (user_id,)
+        query = "SELECT * FROM users WHERE LOWER(name) = %s"
+        try:
+            cursor.execute(query, name_value)
+            results = cursor.fetchall()
+        except Error as e:
+            print("Issue checking if user exists:")
+            print(f"Error: {e}")
+        finally:
+            close_connection(conn, cursor)
+            return bool(results)
 
 def notify_user(user):
     # potentially send email or something
