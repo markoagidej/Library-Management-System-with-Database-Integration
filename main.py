@@ -227,36 +227,21 @@ def menu_book_ops():
             book_mod.borrow_book()
             break
         elif choice == 3: # Return a book
-            # book_returned_ISBN = input("Enter the ISBN of the book to return: ")
-            # try:
-            #     book_to_return = book_collection[book_returned_ISBN]
-            # except KeyError:
-            #     print("No book found with that ISBN!")
-            #     continue
-
-            # book_collection[book_returned_ISBN], next_reserved_user_ID = book_to_return.return_book()
-            # print(f"{book_to_return.get_title()} returned!")
-            # if next_reserved_user_ID:
-            #     next_user = user_collection[next_reserved_user_ID]
-            #     user_mod.notify_user(next_user)
-            #     book_collection[book_returned_ISBN] = book_collection[book_returned_ISBN].borrow_book(next_user.get_UUID())
-            #     user_collection[next_reserved_user_ID] = next_user.add_to_borrow_history(book_collection[book_returned_ISBN])
-            #     print(f"\'{book_to_return.get_title()}\' automatically lent out to user: {next_reserved_user_ID}.")
-            # save_books_file()
-            # save_users_file()
             book_mod.return_book()
             break
         elif choice == 4: # Search for a book
-            search = input("Enter part of the title of the book you would like to search: ")
-            search_lower = search.lower()
-            print(f"Here are all the books with {search} in the title:")
-            book_counter = 0
-            for book in book_collection.values():
-                if search_lower in book.get_title().lower():
-                    book_counter += 1
-                    print(f"{book.get_title()}, {book.get_author()}, {book.get_ISBN()}, {book.get_genre()}, {book.get_publication_date()}, {book.get_available()}, Reservation List:{book.get_reserve_list()}")
-            if book_counter == 0:
-                print(f"No books found with \'{search}\' in the title!")                    
+            # search = input("Enter part of the title of the book you would like to search: ")
+            # search_lower = search.lower()
+            # print(f"Here are all the books with {search} in the title:")
+            # book_counter = 0
+            # for book in book_collection.values():
+            #     if search_lower in book.get_title().lower():
+            #         book_counter += 1
+            #         print(f"{book.get_title()}, {book.get_author()}, {book.get_ISBN()}, {book.get_genre()}, {book.get_publication_date()}, {book.get_available()}, Reservation List:{book.get_reserve_list()}")
+            # if book_counter == 0:
+            #     print(f"No books found with \'{search}\' in the title!")                    
+            # break
+            book_mod.search_book()
             break
         elif choice == 5: # Display all books
             print("Displaying all books in library:")

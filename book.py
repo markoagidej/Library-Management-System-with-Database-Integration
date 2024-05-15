@@ -4,33 +4,6 @@ import genre as genre_mod
 from database_connector import connect_db, close_connection
 from mysql.connector import Error
 import datetime
-
-# class Book:
-#     def __init__(self, title, author_id, genre, ISBN, publication_date, available = True):
-#         self.__title = title
-#         self.__author_id = author_id
-#         self.__genre = genre
-#         self.__ISBN = ISBN
-#         self.__publication_date = publication_date
-#         self.__available = available
-
-#     def get_title(self):
-#         return self.__title
-
-#     def get_author_id(self):
-#         return self.__author_id
-
-#     def get_genre(self):
-#         return self.__genre
-
-#     def get_ISBN(self):
-#         return self.__ISBN
-
-#     def get_publication_date(self):
-#         return self.__publication_date
-
-#     def get_available(self):
-#         return self.__available
     
 def book_collection_add():
     title = input("Enter the title for the new book: ")
@@ -281,6 +254,28 @@ def return_book():
             cursor.execute(query_set_availability)
         else:
             borrow_book(next_user_id, book_id_list[choice])
+
+def search_book():
+    search = input("Enter part of the title of the book you would like to search: ")
+    search_lower_pattern = f"%{search.lower()}%"
+    conn, cursor = connect_db()
+    if conn is not None:
+        search_value = (search_lower_pattern,)
+        query_search = "SELECT * FROM books WHERE LOWER(title) LIKE %s"
+        try:
+            cursor.execute(query_search, search_value)
+            book_list = cursor.fetchall()
+        except Error as e:
+            print("Issue searching for books:")
+            print(f"Error: {e}")
+            close_connection(conn, cursor)
+            return
+        if book_list:
+            print(f"Here are all the books with {search} in the title:")
+            for book in book_list:
+                print(book[1])
+        else:
+            print(f"No books found with {search} in the title!")
 
 def get_reservations():
     pass
