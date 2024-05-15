@@ -16,7 +16,7 @@ def connect_db():
     except Error as e:
         print("Problem connection to server.")
         print(f"Error: {e}")
-        return None
+        return None, None
     
 # close the assumed opne connection and cursor
 def close_connection(connection, cursor):

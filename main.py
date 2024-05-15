@@ -225,25 +225,6 @@ def menu_book_ops():
             break
         elif choice == 2: # Borrow/Reserve a book
             book_mod.borrow_book()
-            # userID = input("Enter the UUID of the user who would like to borrow a book: ")
-            # try:
-            #     user_to_borrow = user_collection[userID]
-            # except KeyError:
-            #     print("No user found with that ID!")
-            #     continue
-
-            # ISBN = input("Enter the ISBN of the book you wish to borrow: ")
-            # try:
-            #     book_to_borrow = book_collection[ISBN]
-            # except KeyError:
-            #     print("No book found with that ISBN!")
-            #     continue
-            
-            # book_collection[ISBN] = book_to_borrow.borrow_book(userID)
-            # if book_collection[ISBN].get_available():
-            #     user_collection[userID] = user_to_borrow.add_to_borrow_history(book_collection[ISBN])
-            # save_books_file()
-            # save_users_file()
             break
         elif choice == 3: # Return a book
             book_returned_ISBN = input("Enter the ISBN of the book to return: ")
