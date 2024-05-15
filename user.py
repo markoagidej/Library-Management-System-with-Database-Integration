@@ -34,6 +34,22 @@ def check_user_exists(user_id):
         finally:
             close_connection(conn, cursor)
             return bool(results)
+                
+# Return a list of book ids borrowed by a user        
+def get_user_borrowed_books(user_id):
+    conn, cursor = connect_db()
+    if conn is not None:
+        user_value = (user_id,)
+        query = "SELECT * FROM borrowed_books WHERE user_id = %s"
+        try:
+            cursor.execute(query, user_value)
+        except Error as e:
+            print(f"Problem getting list of books borrwed by user \'{user_id}\'!")
+            print(f"Error: {e}")
+        finally:
+            close_connection(conn, cursor)
+            return cursor.fetchall()
+
 
 def notify_user(user):
     # potentially send email or something
