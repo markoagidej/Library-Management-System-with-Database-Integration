@@ -22,6 +22,28 @@ def user_collection_add():
         print("New user added!")
         close_connection(conn, cursor)
 
+def view_user_details():
+    conn, cursor = connect_db()
+    if conn is not None:
+        while True:
+            # Validating library id length and existence
+            library_id = input("Enter the library_id of user you want to view details of: ")
+            if len(library_id) != 10:
+                print("Library_id has to be exactly 10 characters!")
+                continue
+            if check_user_exists_by_library_id(library_id):
+                break
+            else:
+                print(f"No user found with library id of \'{library_id}\'")
+                continue
+        library_id_value = (library_id,)
+        query = "SELECT * FROM user WHERE library_id = %s"
+        cursor.execute(query, library_id_value)
+        user = cursor.fetchone()
+        print("id|name|library_id")
+        print(f"{user[0]}|{user[1]}|{user[2]}")
+        close_connection(conn, cursor)
+
 def check_user_exists(user_id):
     conn, cursor = connect_db()
     if conn is not None:

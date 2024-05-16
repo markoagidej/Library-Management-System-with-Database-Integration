@@ -254,15 +254,7 @@ def menu_user_ops():
             user_mod.user_collection_add()
             break
         elif choice == 2: # View user details
-            user_ID = input("Enter the UUID of the user you wish to see details about: ")
-            try:
-                user_details = user_collection[user_ID]
-            except:
-                print(f"Could not find a user with the UUID of {user_ID}")
-                break
-            print(f"Details for user {user_ID}:")
-            print(f"Name: {user_details.get_name()}")
-            print(f"- Borrow History: {user_details.get_borrow_history()}")
+            user_mod.view_user_details()
             break
         elif choice == 3: # Display all users
             print("Displaying all users:")
