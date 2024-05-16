@@ -37,12 +37,35 @@ def view_user_details():
                 print(f"No user found with library id of \'{library_id}\'")
                 continue
         library_id_value = (library_id,)
-        query = "SELECT * FROM user WHERE library_id = %s"
-        cursor.execute(query, library_id_value)
-        user = cursor.fetchone()
-        print("id|name|library_id")
-        print(f"{user[0]}|{user[1]}|{user[2]}")
-        close_connection(conn, cursor)
+        query = "SELECT * FROM users WHERE library_id = %s"
+        try:
+            cursor.execute(query, library_id_value)
+            user = cursor.fetchone()
+        except Error as e:
+            print("Problem viewing user details!")
+            print(f"Error: {e}")
+        finally:
+            if user:
+                print("id|name|library_id")
+                print(f"{user[0]}|{user[1]}|{user[2]}")
+            close_connection(conn, cursor)
+
+def view_all_users():
+    conn, cursor = connect_db()
+    if conn is not None:        
+        query = "SELECT * FROM users"
+        try:
+            cursor.execute(query)
+            user_list = cursor.fetchall()
+        except Error as e:
+            print("Issue displaying all users!")
+            print(f"Error: {e}")
+        finally:
+            if user_list:
+                print("id|name|library_id")
+                for user in user_list:
+                    print(f"{user[0]}|{user[1]}|{user[2]}")
+            close_connection(conn, cursor)
 
 def check_user_exists(user_id):
     conn, cursor = connect_db()

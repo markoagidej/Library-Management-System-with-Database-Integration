@@ -254,12 +254,12 @@ def menu_user_ops():
             user_mod.user_collection_add()
             break
         elif choice == 2: # View user details
+            print("View single user details!")
             user_mod.view_user_details()
             break
         elif choice == 3: # Display all users
             print("Displaying all users:")
-            for user in user_collection.values():
-                print(f"{user.get_UUID()}: {user.get_name()}")
+            user_mod.view_all_users()            
             break
 
 def menu_author_ops():
