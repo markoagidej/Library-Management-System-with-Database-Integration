@@ -62,6 +62,7 @@ def view_all_authors():
                 print("No authors yet!")
             close_connection(conn, cursor)
 
+# Return boolean of if author name exists
 def check_author_exists(author_name_lowered):
     conn, cursor = connect_db()
     if conn is not None:
@@ -76,7 +77,8 @@ def check_author_exists(author_name_lowered):
         finally:
             close_connection(conn, cursor)
             return bool(results)
-        
+
+# Input name, output id 
 def get_author_id_by_name(author_name_lowered):
     conn, cursor = connect_db()
     if conn is not None:
@@ -91,7 +93,8 @@ def get_author_id_by_name(author_name_lowered):
         finally:
             close_connection(conn, cursor)
             return result[0]
-        
+
+# Input id, output name       
 def get_author_name_by_id(author_id):
     conn, cursor = connect_db()
     if conn is not None:

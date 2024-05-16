@@ -67,6 +67,7 @@ def view_all_users():
                     print(f"{user[0]}|{user[1]}|{user[2]}")
             close_connection(conn, cursor)
 
+# Return boolean if user with input 'id' exists
 def check_user_exists(user_id):
     conn, cursor = connect_db()
     if conn is not None:
@@ -82,6 +83,7 @@ def check_user_exists(user_id):
             close_connection(conn, cursor)
             return bool(results)
 
+# Return boolean if user with input 'library_id' exists
 def check_user_exists_by_library_id(library_id):
     conn, cursor = connect_db()
     if conn is not None:
@@ -97,6 +99,7 @@ def check_user_exists_by_library_id(library_id):
             close_connection(conn, cursor)
             return bool(results)
 
+# Input libaray_id, output id
 def get_id_by_library_id(library_id):
     conn, cursor = connect_db()
     if conn is not None:

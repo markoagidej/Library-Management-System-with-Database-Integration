@@ -1,9 +1,9 @@
-https://github.com/markoagidej/Library-Management-System
+https://github.com/markoagidej/Library-Management-System-with-Database-Integration
 
-# Library Management System
+# Library Management System with SQL Database Integration
 Welcome to the multi-functional Library Manaement System!
 This library is compiled of books, which have an author and a genre. Users can then borrow books.
-This system also features a file interface system where you can load and save formatted data. An automatic backup is also created whenever you make any change.
+This system features a database where all data is stored.
 
 From the main menu, you will have 5 choices:
 1. Book Operations
@@ -23,7 +23,7 @@ Each choice will open a sub-menu with more options. (Except "Quit")
 ### 1. Add a new book
 Add a book to the library!
 You will be asked for a title, author, ISBN, genre, and publication date.
-*If you are adding a book wit ha new author or genre, you will be prompted to create those as well!
+*If you are adding a book with a new author or genre, you will be prompted to create those as well!
 
 ### 2. Borrow/Reservse a book
 Lend a book out!
@@ -49,10 +49,10 @@ Simply see a list of all books the library owns, as well as their borrowed statu
 
 ### 1. Add a new user
 Create a new library card!
-Add a user by name so they can borrow books and keep track of fees on account.
+Add a user by name with a unique library_id so they can borrow books!
 
 ### 2. View user details
-By name, see the loan history and current balance on a user.
+View the name and library_id of a user.
 
 ### 3. Display all users
 See all the users!
@@ -85,7 +85,7 @@ Create a new genre for the library!
 When you create a book with a new genre, that genre is automatically created in the library database!
 
 ### 2. View genre details
-Enter a genre and view a list of all books in this genre.
+Enter a genre and view its descriptio nand category.
 
 ### 3. Display all genres
 See a list of all genres contained in the library.
@@ -93,4 +93,4 @@ See a list of all genres contained in the library.
 ## 5. Quit
 It quits.
 
-https://github.com/markoagidej/Library-Management-System
+https://github.com/markoagidej/Library-Management-System-with-Database-Integration

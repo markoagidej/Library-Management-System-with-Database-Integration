@@ -63,6 +63,7 @@ def view_all_genres():
                 print("No authors yet!")
             close_connection(conn, cursor)
 
+# Return boolean of if name exists in genres
 def check_genre_exists(genre_name_lowered):
     conn, cursor = connect_db()
     if conn is not None:
@@ -77,7 +78,8 @@ def check_genre_exists(genre_name_lowered):
         finally:
             close_connection(conn, cursor)
             return bool(results)
-        
+
+# Input name, get id   
 def get_genre_id_by_name(genre_name_lowered):
     conn, cursor = connect_db()
     if conn is not None:
@@ -92,7 +94,8 @@ def get_genre_id_by_name(genre_name_lowered):
         finally:
             close_connection(conn, cursor)
             return result[0]
-        
+
+# Input id, get name
 def get_genre_name_by_id(genre_id):    
     conn, cursor = connect_db()
     if conn is not None:

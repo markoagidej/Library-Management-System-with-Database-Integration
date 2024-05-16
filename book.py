@@ -51,6 +51,7 @@ def book_collection_add():
         finally:
             close_connection(conn, cursor)
 
+# Return boolean if book with isbn exists
 def check_book_exists(ISBN):
     conn, cursor = connect_db()
     if conn is not None:
@@ -66,6 +67,7 @@ def check_book_exists(ISBN):
             close_connection(conn, cursor)
             return bool(result)
 
+# Return boolean if book of isbn has an available copy
 def check_book_available(ISBN):
     conn, cursor = connect_db()
     if conn is not None:        
@@ -84,6 +86,7 @@ def check_book_available(ISBN):
             else:
                 return False
 
+# Returns the id of an available copy of a book with input isbn
 def get_available_book_id(ISBN):
     conn, cursor = connect_db()
     if conn is not None:        
