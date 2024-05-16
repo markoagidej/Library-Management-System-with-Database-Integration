@@ -3,12 +3,12 @@ from mysql.connector import Error
     
 def author_collection_add(name = ""):
     if not name:
-        name = input(input("Enter the name of the new author: "))
+        name = input("Enter the name of the new author: ")
     biography = input(f"Enter a biography for \'{name}\': ")
     conn, cursor = connect_db()
     if conn is not None:
         details = (name, biography)
-        query = "INSERT INTO auhtors (name, biography) VALUES (%s, %s)"
+        query = "INSERT INTO authors (name, biography) VALUES (%s, %s)"
         try:
             cursor.execute(query, details)
             conn.commit()
@@ -98,11 +98,14 @@ def get_author_id_by_name(author_name_lowered):
 def get_author_name_by_id(author_id):
     conn, cursor = connect_db()
     if conn is not None:
-        query = f"SELECT name FROM authors WHERE id = {author_id}"
+        author_value = (author_id,)
+        query = "SELECT name FROM authors WHERE id = %s"
         try:
-            cursor.execute(query)
-            author = cursor.fetchone()
-            return author[0]
+            cursor.execute(query, author_value)
+            author = cursor.fetchall()
+            if author:
+                close_connection(conn, cursor)
+                return author[0][0]
         except Error as e:
             print("Problem finding author by id!")
             print(f"Error: {e}")

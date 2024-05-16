@@ -10,11 +10,6 @@ def main():
     global author_collection
     global genre_collection
 
-    populate_collection("books")
-    populate_collection("users")
-    populate_collection("authors")
-    populate_collection("genres")
-
     while True:
         print("Main Menu:")
         print("1. Book Operations")
@@ -75,6 +70,7 @@ def menu_book_ops():
         elif choice == 5: # Display all books
             print("Displaying all books in library:")
             book_mod.display_all_books()
+            break
 
 def menu_user_ops():
     global user_collection

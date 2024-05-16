@@ -7,7 +7,7 @@ def user_collection_add():
         name = input("Enter the name of the new user: ")
         while True:
             # Validating library id length and unqiueness
-            library_id = input("Enter a unique 10 cahracter library id for the new user: ")
+            library_id = input("Enter a unique 10 character library id for the new user: ")
             if len(library_id) != 10:
                 print("Library_id has to be exactly 10 characters!")
                 continue
@@ -19,7 +19,7 @@ def user_collection_add():
         query = "INSERT INTO users (name, library_id) VALUES (%s, %s)"
         cursor.execute(query, user_values)
         conn.commit()
-        print("New user added!")
+        print(f"New \'{name}\' user added with library_id of \'{library_id}\'!")
         close_connection(conn, cursor)
 
 def view_user_details():
@@ -125,12 +125,15 @@ def get_user_borrowed_books_by_library_id(library_id):
         query = "SELECT * FROM borrowed_books WHERE user_id = %s"
         try:
             cursor.execute(query, user_value)
+            books_list = cursor.fetchall()
+            if books_list:
+                close_connection(conn, cursor)
+                return books_list
         except Error as e:
             print(f"Problem getting list of books borrwed by user \'{library_id}\'!")
             print(f"Error: {e}")
         finally:
             close_connection(conn, cursor)
-            return cursor.fetchall()
 
 # potentially send email or something
 def notify_user(user):

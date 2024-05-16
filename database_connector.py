@@ -7,11 +7,12 @@ def connect_db():
         conn = mysql.connector.connect(
             database="applying_sql_in_python",
             user="root",
-            password="PASSWORD",
+            password="*963.MADEupPASSWORD",
             host="localhost"
             )
         if conn.is_connected():
             cursor = conn.cursor()
+            cursor.execute("USE `library_management_system`")
             return conn, cursor
     except Error as e:
         print("Problem connection to server.")

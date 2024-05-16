@@ -3,7 +3,7 @@ from mysql.connector import Error
     
 def genre_collection_add(name = ""):
     if not name:
-        name = input(input("Enter the name of the new genre: "))
+        name = input("Enter the name of the new genre: ")
     description = input(f"Enter a description for \'{name}\': ")
     category = input(f"Enter a category for \'{name}\': ")
     conn, cursor = connect_db()
@@ -99,9 +99,10 @@ def get_genre_id_by_name(genre_name_lowered):
 def get_genre_name_by_id(genre_id):    
     conn, cursor = connect_db()
     if conn is not None:
-        query = f"SELECT name FROM genres WHERE id = {genre_id}"
+        genre_value = (genre_id,)
+        query = "SELECT name FROM genres WHERE id = %s"
         try:
-            cursor.execute(query)
+            cursor.execute(query, genre_value)
             genre = cursor.fetchone()
             return genre[0]
         except Error as e:

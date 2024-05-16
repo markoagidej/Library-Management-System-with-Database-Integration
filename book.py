@@ -72,35 +72,53 @@ def check_book_available(ISBN):
     conn, cursor = connect_db()
     if conn is not None:        
         isbn_value = (ISBN,)
-        query = "SELECT availability FROM books WHERE isbn = %s AND available = 1"
+        query = "SELECT availability FROM books WHERE isbn = %s AND availability = 1"
         try:
             cursor.execute(query, isbn_value)
             result = cursor.fetchone()
-        except Error as e:
-            print("Issue searching for book availability by isbn:")
-            print(f"Error: {e}")
-        finally:
             close_connection(conn, cursor)
             if result:
                 return result[0]
             else:
                 return False
+        except Error as e:
+            print("Issue searching for book availability by isbn:")
+            print(f"Error: {e}")
+        finally:
+            close_connection(conn, cursor)
 
 # Returns the id of an available copy of a book with input isbn
 def get_available_book_id(ISBN):
     conn, cursor = connect_db()
     if conn is not None:        
         isbn_value = (ISBN,)
-        query = "SELECT id FROM books WHERE isbn = %s AND available = 1"
+        query = "SELECT id FROM books WHERE isbn = %s AND availability = 1"
         try:
             cursor.execute(query, isbn_value)
             result = cursor.fetchone()
+            if result:
+                return result[0]
         except Error as e:
             print("Issue searching for book.id by isbn:")
             print(f"Error: {e}")
         finally:
             close_connection(conn, cursor)
-            return result[0]
+
+def get_next_reserved_book_id(ISBN):
+    conn, cursor = connect_db()
+    if conn is not None:        
+        isbn_value = (ISBN,)
+        query = "SELECT borrowed.book_id, b.isbn FROM borrowed_books borrowed, books b WHERE borrowed.book_id = b.id AND b.isbn = %s ORDER BY borrowed.id ASC"
+        try:
+            cursor.execute(query, isbn_value)
+            result = cursor.fetchone()
+            if result:
+                return result[0]
+        except Error as e:
+            print("Issue searching for book.id by isbn:")
+            print(f"Error: {e}")
+        finally:
+            close_connection(conn, cursor)
 
 def borrow_book(given_user_id = "", given_book_id = ""):
     # Need to check if user exists
@@ -114,6 +132,8 @@ def borrow_book(given_user_id = "", given_book_id = ""):
                 return
             print("No user found with that library id!")
             return
+        else:
+            user_id = user_mod.get_id_by_library_id(library_id)
     if not given_book_id:
         # Need to check if book exists
         ISBN = input("Enter the ISBN of the book to be borrowed: ")
@@ -126,7 +146,7 @@ def borrow_book(given_user_id = "", given_book_id = ""):
     # Opening connection
     conn, cursor = connect_db()
     if conn is not None:
-        if given_book_id: # Will get here if book was returned and had resrvation
+        if given_book_id: # Will get here if book was returned and had reservation
             # Adding an entry into the 'borrowed_books'
             date_today = datetime.datetime.now()
             date_return = date_today + datetime.timedelta(days=7)
@@ -134,11 +154,22 @@ def borrow_book(given_user_id = "", given_book_id = ""):
             query_add_borrowed_history = "INSERT INTO borrowed_books (user_id, book_id, borrow_date, return_date) VALUES (%s, %s, %s, %s)"
             try:
                 cursor.execute(query_add_borrowed_history, borrow_details)
+                print(f"Book automatically lent out to next on reserve list!")
                 print(f"Book due on {date_return}")
                 conn.commit()
             except Error as e:
                 print("Issue adding returned book to borrowed books with reserved user:")
                 print(f"Error: {e}")
+            remove_details = (user_id, given_book_id)
+            query_remove_reservation = "DELETE FROM book_reservations WHERE user_id = %s AND book_id = %s"
+            try:                
+                cursor.execute("SET SQL_SAFE_UPDATES = 0")
+                cursor.execute(query_remove_reservation, remove_details)
+                cursor.execute("SET SQL_SAFE_UPDATES = 1")
+                conn.commit()
+            except Error as e:
+                print("Issue removing book resrevation:")
+                print(f"Error: {e}")                
         else: # if not given_book_id
             # Checking if book is already borrowed
             check_available = check_book_available(ISBN)
@@ -147,7 +178,7 @@ def borrow_book(given_user_id = "", given_book_id = ""):
                 book_id = get_available_book_id(ISBN)
                 # Updating the availability status in 'books'
                 book_id_value = (book_id,)
-                query_toggle_available = "UPDATE books SET availability 0 WHERE id = %s"
+                query_toggle_available = "UPDATE books SET availability = 0 WHERE id = %s"
                 try:
                     cursor.execute(query_toggle_available, book_id_value)
                     # conn.commit() # No commit here since we want both of these actions to successfully take place before making changes to the database
@@ -175,11 +206,13 @@ def borrow_book(given_user_id = "", given_book_id = ""):
                 # Requeset to add to reservation list, then adding to list
                 choice = input("That book is already borrowed! Would you like to be added to the reservation list? (y/n): ")
                 if choice == "y":
+                    book_id = get_next_reserved_book_id(ISBN)
                     reserved_values = (user_id, book_id)
-                    query_add_resreved = "INSERT INTO book_reservations (user_id, book_id)"
+                    query_add_resreved = "INSERT INTO book_reservations (user_id, book_id) VALUES (%s, %s)"
                     try:
                         cursor.execute(query_add_resreved, reserved_values)
                         conn.commit()
+                        print(f"Book reserved for library_id {library_id}!")
                     except Error as e:
                         print("Issue adding entry to book reservations:")
                         print(f"Error: {e}")
@@ -205,13 +238,18 @@ def return_book():
     if conn is not None:
         book_counter = 0
         book_id_list = ["index filler"] # Purpose of index filler is to directly take later input for selected book without performing math
-        for book_id in borrowed_books:
+        for book in borrowed_books:
             book_counter += 1
-            query_get_book_detail = f"SELECT * FROM books WHERE book_id = {book_id[0]}"
-            cursor.execute(query_get_book_detail)
-            book_details = cursor.fetchone()
-            print(f"{book_counter}. {book_details[1]}")
-            book_id_list.append(book_details[0])
+            book_id_value = (book[2],)
+            query_get_book_detail = "SELECT * FROM books WHERE id = %s"
+            try:
+                cursor.execute(query_get_book_detail, book_id_value)
+                book_details = cursor.fetchone()
+                print(f"{book_counter}. {book_details[1]}")
+                book_id_list.append(book_details[0])
+            except Error as e:
+                print("Problem dispalying borrowed book for user!")
+                print(f"Error {e}")
         if book_counter > 1:
             while True:
                 choice = input(f"Which number book is being returned? (1-{book_counter}): ")
@@ -228,11 +266,13 @@ def return_book():
                 print("No books returned!")
                 return
         # Removing book from borrowed books
+        book_id_choice_value = (book_id_list[choice],)
         try:
             cursor.execute("SET SQL_SAFE_UPDATES = 0")
-            query_remove_from_borrowed = f"DELETE FROM borrowed_books WHERE book_id = {book_id_list[choice]}"
-            cursor.execute(query_remove_from_borrowed)
+            query_remove_from_borrowed = "DELETE FROM borrowed_books WHERE book_id = %s"
+            cursor.execute(query_remove_from_borrowed, book_id_choice_value)
             cursor.execute("SET SQL_SAFE_UPDATES = 1")
+            conn.commit()
             print("Book returned!")
         except Error as e:
             print("Issue removing entry from borrowed books!")
@@ -241,8 +281,8 @@ def return_book():
             return
         # Selecting next user to lend to from reserve list
         try:
-            query_check_if_reserved = f"SELECT user_id FROM book_reservations WHERE book_id = {book_id_list[choice]} ORDER BY id ASC"
-            cursor.execute(query_check_if_reserved)
+            query_check_if_reserved = "SELECT user_id FROM book_reservations WHERE book_id = %s ORDER BY id ASC"
+            cursor.execute(query_check_if_reserved, book_id_choice_value)
             next_user = cursor.fetchone()
             if next_user:
                 next_user_id = next_user[0]
@@ -255,8 +295,8 @@ def return_book():
             return
         # Toggling availablility in books (if there is a next user found in reservervations, no need to alter availability but need to reborrow the book to next user)
         if next_user_id is None:
-            query_set_availability = f"UPDATE books SET availability = 1 WHERE id = {book_id_list[choice]}"
-            cursor.execute(query_set_availability)
+            query_set_availability = "UPDATE books SET availability = 1 WHERE id = %s"
+            cursor.execute(query_set_availability, book_id_choice_value)
         else:
             borrow_book(next_user_id, book_id_list[choice])
         conn.commit()
@@ -278,9 +318,9 @@ def search_book():
             close_connection(conn, cursor)
             return
         if book_list:
-            print(f"Here are all the books with {search} in the title:")
+            print(f"Here are all the books with \'{search}\' in the title:")
             for book in book_list:
-                print(book[1])
+                print(f"- {book[1]}")
         else:
             print(f"No books found with {search} in the title!")
 
@@ -293,8 +333,8 @@ def display_all_books():
             print("id|title|author|genre|isbn|publication_date|available")
             book_list = cursor.fetchall()
             for book in book_list:
-                author = author_mod.get_author_name_by_id({book[2]})
-                genre = genre_mod.get_genre_name_by_id({book[3]})
+                author = author_mod.get_author_name_by_id(book[2])
+                genre = genre_mod.get_genre_name_by_id(book[3])
                 print(f"{book[0]}|{book[1]}|{author}|{genre}|{book[4]}|{book[5]}|{book[6]}")
         except Error as e:
             print("Problem dispalying all books!")
