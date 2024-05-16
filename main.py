@@ -224,30 +224,20 @@ def menu_book_ops():
             book_mod.book_collection_add()
             break
         elif choice == 2: # Borrow/Reserve a book
+            print("Borrowing a book!")
             book_mod.borrow_book()
             break
         elif choice == 3: # Return a book
+            print("Returning a book!")
             book_mod.return_book()
             break
         elif choice == 4: # Search for a book
-            # search = input("Enter part of the title of the book you would like to search: ")
-            # search_lower = search.lower()
-            # print(f"Here are all the books with {search} in the title:")
-            # book_counter = 0
-            # for book in book_collection.values():
-            #     if search_lower in book.get_title().lower():
-            #         book_counter += 1
-            #         print(f"{book.get_title()}, {book.get_author()}, {book.get_ISBN()}, {book.get_genre()}, {book.get_publication_date()}, {book.get_available()}, Reservation List:{book.get_reserve_list()}")
-            # if book_counter == 0:
-            #     print(f"No books found with \'{search}\' in the title!")                    
-            # break
+            print("Searching for a book!")
             book_mod.search_book()
             break
         elif choice == 5: # Display all books
             print("Displaying all books in library:")
-            for book in book_collection.values():
-                print(f"{book.get_title()}, {book.get_author()}, {book.get_ISBN()}, {book.get_genre()}, {book.get_publication_date()}, {book.get_available()}, Reservation List:{book.get_reserve_list()}")
-            break
+            book_mod.display_all_books()
 
 def menu_user_ops():
     global user_collection

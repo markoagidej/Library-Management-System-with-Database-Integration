@@ -1,23 +1,5 @@
 from database_connector import connect_db, close_connection
 from mysql.connector import Error
-
-# class Genre:
-#     def __init__(self, name, description, category):
-#         self.__name = name
-#         self.__description = description
-#         self.__category = category
-
-#     def get_name(self):
-#         return self.__name
-
-#     def get_description(self):
-#         return self.__description
-
-#     def get_category(self):
-#         return self.__category
-    
-#     def __str__(self):
-#         return self.__name
     
 def genre_collection_add(name = ""):
     if not name:
@@ -66,3 +48,17 @@ def get_genre_id_by_name(genre_name_lowered):
         finally:
             close_connection(conn, cursor)
             return result[0]
+        
+def get_genre_name_by_id(genre_id):    
+    conn, cursor = connect_db()
+    if conn is not None:
+        query = f"SELECT name FROM genres WHERE id = {genre_id}"
+        try:
+            cursor.execute(query)
+            genre = cursor.fetchone()
+            return genre[0]
+        except Error as e:
+            print("Problem finding genre by id!")
+            print(f"Error: {e}")
+        finally:
+            close_connection(conn, cursor)

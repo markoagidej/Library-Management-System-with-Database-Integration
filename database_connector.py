@@ -20,5 +20,5 @@ def connect_db():
     
 # close the assumed opne connection and cursor
 def close_connection(connection, cursor):
-    connection.close()
     cursor.close()
+    connection.close()

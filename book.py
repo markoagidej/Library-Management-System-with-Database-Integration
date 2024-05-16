@@ -131,6 +131,7 @@ def borrow_book(given_user_id = "", given_book_id = ""):
             query_add_borrowed_history = "INSERT INTO borrowed_books (user_id, book_id, borrow_date, return_date) VALUES (%s, %s, %s, %s)"
             try:
                 cursor.execute(query_add_borrowed_history, borrow_details)
+                print(f"Book due on {date_return}")
                 conn.commit()
             except Error as e:
                 print("Issue adding returned book to borrowed books with reserved user:")
@@ -158,6 +159,7 @@ def borrow_book(given_user_id = "", given_book_id = ""):
                 query_add_borrowed_history = "INSERT INTO borrowed_books (user_id, book_id, borrow_date, return_date) VALUES (%s, %s, %s, %s)"
                 try:
                     cursor.execute(query_add_borrowed_history, borrow_details)
+                    print(f"Book due on {date_return}")
                     conn.commit()
                 except Error as e:
                     print("Issue adding entry to borrowed books:")
@@ -195,7 +197,7 @@ def return_book():
     if not borrowed_books:
         print(f"User {user_id} has no borrowed books!")
         return
-    # Display all books then ask input for which one to return
+    # Display all books borrowed by user then ask input for which one to return
     conn, cursor = connect_db()
     if conn is not None:
         book_counter = 0
@@ -254,6 +256,8 @@ def return_book():
             cursor.execute(query_set_availability)
         else:
             borrow_book(next_user_id, book_id_list[choice])
+        conn.commit()
+        close_connection(conn, cursor)
 
 def search_book():
     search = input("Enter part of the title of the book you would like to search: ")
@@ -277,5 +281,20 @@ def search_book():
         else:
             print(f"No books found with {search} in the title!")
 
-def get_reservations():
-    pass
+def display_all_books():
+    conn, cursor = connect_db()
+    if conn is not None:
+        query = "SELECT * FROM books"
+        try:
+            cursor.execute(query)
+            print("id|title|author|genre|isbn|publication_date|available")
+            book_list = cursor.fetchall()
+            for book in book_list:
+                author = author_mod.get_author_name_by_id({book[2]})
+                genre = genre_mod.get_genre_name_by_id({book[3]})
+                print(f"{book[0]}|{book[1]}|{author}|{genre}|{book[4]}|{book[5]}|{book[6]}")
+        except Error as e:
+            print("Problem dispalying all books!")
+            print(f"Error: {e}")
+        finally:
+            close_connection(conn, cursor)
