@@ -7,7 +7,7 @@ def connect_db():
         conn = mysql.connector.connect(
             database="applying_sql_in_python",
             user="root",
-            password="*963.MADEupPASSWORD",
+            password="PASSWORD",
             host="localhost"
             )
         if conn.is_connected():
