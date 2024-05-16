@@ -19,6 +19,49 @@ def author_collection_add(name = ""):
         finally:
             close_connection(conn, cursor)
 
+def view_author_details():
+    conn, cursor = connect_db()
+    if conn is not None:
+        author_name = input("Enter the name of the author you would like to see the details of: ")
+        author_name_lower = author_name.lower()
+        lower_name_value = (author_name_lower,)
+        query = "SELECT * FROM authors WHERE LOWER(name) LIKE %s"
+        try:
+            cursor.execute(query, lower_name_value)
+            authors = cursor.fetchall()
+        except Error as e:
+            print("Issue viewing author details")
+            print(f"Error: {e}")
+        finally:
+            if authors:
+                print(f"Showing all authors with {author_name} in their name.")
+                print("id|name|biography")
+                for author in authors:
+                    print(f"{author[0]}|{author[1]}|{author[2]}")
+            else:
+                print(f"No author with the name {author_name} found!")
+            close_connection(conn, cursor)
+
+def view_all_authors():
+    conn, cursor = connect_db()
+    if conn is not None:
+        query = "SELECT * FROM authors"
+        try:
+            cursor.execute(query)
+            authors = cursor.fetchall()
+        except Error as e:
+            print("Issue disaplying all authors!")
+            print(f"Error: {e}")
+        finally:
+            if authors:
+                print(f"Showing all authors.")
+                print("id|name|biography")
+                for author in authors:
+                    print(f"{author[0]}|{author[1]}|{author[2]}")
+            else:
+                print("No authors yet!")
+            close_connection(conn, cursor)
+
 def check_author_exists(author_name_lowered):
     conn, cursor = connect_db()
     if conn is not None:

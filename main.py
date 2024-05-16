@@ -277,33 +277,14 @@ def menu_author_ops():
             continue
 
         if choice == 1: # Add a new author
-            print("Adding a new author!")
-            author_name = input("Enter the name of the new author: ")
-            author_biography = input(f"Enter the biography of \'{author_name}\': ")
-            author_collection = author_mod.author_collection_add(author_name, author_biography, author_collection)
-            print(f"{author_name} added to Author collection!")
-            save_authors_file()
+            author_mod.author_collection_add()
             break
         elif choice == 2: # View author details
-            author_name = input("Enter the name of the author you would like to see the details of: ")
-            author_name_lower = author_name.lower()
-            author_search = False
-
-            # prints details for any author that has a matching string within
-            for author in author_collection:
-                if author_name_lower in author.get_name().lower():
-                    author_search = True
-                    print(f"{author.get_name()}'s biography:")
-                    print(f"{author.get_biography()}")
-            if not author_search:
-                print(f"No author with the name {author_name} found!")
-
+            author_mod.view_author_details()
             break
         elif choice == 3: # Display all authors
             print("Displaying all authors!")
-            for author in author_collection:
-                print(f"{author.get_name()}'s biography: ")
-                print(f"{author.get_biography()}")
+            author_mod.view_all_authors()
             break
 
 def menu_genre_ops():
