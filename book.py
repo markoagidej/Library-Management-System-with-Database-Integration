@@ -104,8 +104,8 @@ def borrow_book(given_user_id = "", given_book_id = ""):
     if given_user_id:
         user_id = given_user_id
     else:
-        user_id = input("Enter the library id of who would like to borrow a book: ")
-        user_check = user_mod.check_user_exists(user_id)
+        library_id = input("Enter the library_id of who would like to borrow a book: ")
+        user_check = user_mod.check_user_exists_by_library_id(library_id)
         if not user_check:
             if user_check is None:
                 return
@@ -183,19 +183,19 @@ def borrow_book(given_user_id = "", given_book_id = ""):
         close_connection(conn, cursor)
 
 def return_book():
-    user_id = input("Enter the library_id of the person who wants to return a book: ")
+    library_id = input("Enter the library_id of the person who wants to return a book: ")
     # Checking user exists
-    user_check = user_mod.check_user_exists(user_id)
+    user_check = user_mod.check_user_exists_by_library_id(library_id)
     if not user_check:
         if user_check is None:
             return
         print("No user found with that library id!")
         return
     # Getting list of book ids that user currently has borrowed
-    borrowed_books = user_mod.get_user_borrowed_books(user_id)
+    borrowed_books = user_mod.get_user_borrowed_books_by_library_id(library_id)
     # Check if there are any books at all in the list
     if not borrowed_books:
-        print(f"User {user_id} has no borrowed books!")
+        print(f"User {library_id} has no borrowed books!")
         return
     # Display all books borrowed by user then ask input for which one to return
     conn, cursor = connect_db()
@@ -217,7 +217,7 @@ def return_book():
                     continue
                 break
         else:
-            print(f"This is the only book currently borrowed by {user_id}.")
+            print(f"This is the only book currently borrowed by {library_id}.")
             cont_choice = input("Do you want to return this book? (y/n): ")
             if cont_choice == "y":
                 choice = 1

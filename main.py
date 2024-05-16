@@ -201,10 +201,6 @@ def main():
             exit()
 
 def menu_book_ops():
-    # global book_collection
-    # global user_collection
-    # global author_collection
-    # global genre_collection
     while True:
         print("Book Operations:")
         print("1. Add a new book")
@@ -255,14 +251,7 @@ def menu_user_ops():
 
         if choice == 1: # Add a new user
             print("Adding a new user!")
-            user_name = input("Enter the name of the new user: ")
-            user_UUID = input(f"Declare a UUID for {user_name}: ")
-            if user_collection:
-                if user_UUID in user_collection:
-                    print("There is already a user with that UUID! Please try again.")
-                    break
-            user_collection = user_mod.user_collection_add(user_name, user_UUID, user_collection)
-            save_users_file()
+            user_mod.user_collection_add()
             break
         elif choice == 2: # View user details
             user_ID = input("Enter the UUID of the user you wish to see details about: ")
