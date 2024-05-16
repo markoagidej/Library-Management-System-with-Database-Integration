@@ -303,38 +303,14 @@ def menu_genre_ops():
 
         if choice == 1: # Add a new genre
             print("Adding a new genre!")
-            genre_name = input("Enter the name of the new genre: ")
-            genre_list = [existing_genre.get_name().lower for existing_genre in genre_collection]
-            if genre_name.lower() in genre_list:
-                print(f"Genre {genre_name} already exists!")
-                continue
-            genre_description = input(f"Enter the description of \'{genre_name}\': ")
-            genre_category = input(f"Enter the category of \'{genre_name}\': ")
-            genre_collection = genre_mod.genre_collection_add(genre_name, genre_description, genre_category, genre_collection)
-            print(f"{genre_name} added to Genre collection!")
-            save_genres_file()
+            genre_mod.genre_collection_add()
             break
         elif choice == 2: # View genre details
-            genre_input = input("Enter the name of the Genre you would like to see details of: ")
-            genre_lower = genre_input.lower()
-            genre_search = False
-
-            # prints details for any genre that has a matching string within
-            for genre in genre_collection:
-                if genre_lower in genre.get_name().lower():
-                    genre_search = True
-                    print(f"Genre: {genre.get_name()}")
-                    print(f"- Description: {genre.get_description()}")
-                    print(f"- Category: {genre.get_category()}")
-            if not genre_search:
-                print(f"No genre called {genre_input} found!")
+            genre_mod.view_genre_details()
             break
         elif choice == 3: # Display all genres
             print("Displaying all genres!")
-            for genre in genre_collection:
-                print(f"Genre: {genre.get_name()}")
-                print(f"- Description: {genre.get_description()}")
-                print(f"- Category: {genre.get_category()}")
+            genre_mod.view_all_genres()
             break
 
 
